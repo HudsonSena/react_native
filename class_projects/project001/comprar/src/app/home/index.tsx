@@ -36,12 +36,16 @@ export default function App() {
     };
 
     await itemsStorage.add(newItem);
-    await getItems();
+    await itemsByStatus();
+
+    Alert.alert("Adicionado", `Adicionado ${description}`);
+    setFilter(FilterStatus.PENDING);
+    setDescription("");
   }
 
-  async function getItems() {
+  async function itemsByStatus() {
     try {
-      const response = await itemsStorage.get();
+      const response = await itemsStorage.getByStatus(filter);
       setItems(response);
     } catch (error) {
       Alert.alert("Erro", "Não foi possível filtrar os itens.");
@@ -49,8 +53,8 @@ export default function App() {
   }
 
   useEffect(() => {
-    getItems();
-  }, []);
+    itemsByStatus();
+  }, [filter]);
 
   return (
     <View style={styles.container}>
@@ -60,6 +64,7 @@ export default function App() {
         <Input
           placeholder="O que você precisa comprar?"
           onChangeText={setDescription}
+          value={description}
         />
         <Button title="Adicionar" onPress={handleAdd} />
       </View>
