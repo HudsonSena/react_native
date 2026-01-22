@@ -43,12 +43,54 @@ export default function App() {
     setDescription("");
   }
 
+  function handleClear() {
+    Alert.alert("Limpar", "Deseja remover todoos?", [
+      {text: "Não", style: "cancel"},
+      {text: "Sim", onPress: () => onClear()}
+    ])
+  }
+
+  async function onClear() {
+    try {
+      await itemsStorage.clear();
+      setItems([]);
+      Alert.alert("Limpo", "Todos os itens foram removidos.");
+    } catch (error) {
+      console.log(error);
+      Alert.alert("Limpar", "Não foi possível remover todos os items.");
+    }
+  }
+
+  async function handleRemove(id: string) {
+    try {
+      await itemsStorage.remove(id);
+      await itemsByStatus();
+      Alert.alert("Removido", "Item removido com sucesso.");
+    } catch (error) {
+      console.log(error);
+      Alert.alert("Remover", "Não foi possível remover.");
+    }
+    await itemsStorage.remove(id);
+    await itemsByStatus();
+    Alert.alert("Removido", "Item removido com sucesso.");
+  }
+
   async function itemsByStatus() {
     try {
       const response = await itemsStorage.getByStatus(filter);
       setItems(response);
     } catch (error) {
       Alert.alert("Erro", "Não foi possível filtrar os itens.");
+    }
+  }
+
+  async function handleToggleItemStatus(id: string) {
+    try {
+      await itemsStorage.toggleStatus(id);
+      await itemsByStatus();
+    } catch (error) {
+      console.log(error);
+      Alert.alert("Erro", "Não foi possível atualizar o status.");
     }
   }
 
@@ -78,7 +120,7 @@ export default function App() {
               onPress={() => setFilter(status)}
             />
           ))}
-          <TouchableOpacity style={styles.clarButton}>
+          <TouchableOpacity style={styles.clarButton} onPress={handleClear}>
             <Text style={styles.clearText}>Limpar</Text>
           </TouchableOpacity>
         </View>
@@ -88,8 +130,8 @@ export default function App() {
           renderItem={({ item }) => (
             <Item
               data={item}
-              onRemove={() => console.log("Remover")}
-              onStatus={() => console.log("Mudar o status")}
+              onRemove={() => handleRemove(item.id)}
+              onStatus={() => handleToggleItemStatus(item.id)}
             />
           )}
           showsVerticalScrollIndicator={false}
