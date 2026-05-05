@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "comprar",
-    "slug": "comprar",
+    "name": "navigationOf",
+    "slug": "navigationOf",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
@@ -22,7 +22,7 @@
       },
       "edgeToEdgeEnabled": true,
       "predictiveBackGestureEnabled": false,
-      "package": "com.anonymous.comprar"
+      "package": "com.anonymous.navigationOf"
     },
     "web": {
       "favicon": "./assets/favicon.png"
